@@ -6,20 +6,20 @@
 
 using namespace std;
 
-vector<vector<bool> > graph, used; //graph - матриця суміжності графа, used - використані ребра графа
-queue<vector<int> > q; //q - черга для bfs
-vector<int> route; //route - маршрут
-int finish = -1, n; //finish - індекс фінішної точки, n - кількість індексованих точок
+vector<vector<bool> > graph, used; //graph - РјР°С‚СЂРёС†СЏ СЃСѓРјС–Р¶РЅРѕСЃС‚С– РіСЂР°С„Р°, used - РІРёРєРѕСЂРёСЃС‚Р°РЅС– СЂРµР±СЂР° РіСЂР°С„Р°
+queue<vector<int> > q; //q - С‡РµСЂРіР° РґР»СЏ bfs
+vector<int> route; //route - РјР°СЂС€СЂСѓС‚
+int finish = -1, n; //finish - С–РЅРґРµРєСЃ С„С–РЅС–С€РЅРѕС— С‚РѕС‡РєРё, n - РєС–Р»СЊРєС–СЃС‚СЊ С–РЅРґРµРєСЃРѕРІР°РЅРёС… С‚РѕС‡РѕРє
 
 int bfs() {
-    //перевірка на зв'язність графа
+    //РїРµСЂРµРІС–СЂРєР° РЅР° Р·РІ'СЏР·РЅС–СЃС‚СЊ РіСЂР°С„Р°
     if (q.empty()) return -1;
 
     route = q.front();
     q.pop();
-    int i, last = route.back(); //i - індекс для циклу, last - остання точка маршруту
+    int i, last = route.back(); //i - С–РЅРґРµРєСЃ РґР»СЏ С†РёРєР»Сѓ, last - РѕСЃС‚Р°РЅРЅСЏ С‚РѕС‡РєР° РјР°СЂС€СЂСѓС‚Сѓ
 
-    //пошук ще не використаних суміжних точок
+    //РїРѕС€СѓРє С‰Рµ РЅРµ РІРёРєРѕСЂРёСЃС‚Р°РЅРёС… СЃСѓРјС–Р¶РЅРёС… С‚РѕС‡РѕРє
     for (i = 0; i < n; i++) if (graph[last][i] && !used[last][i]) {
             route.push_back(i);
             if (i == finish) return route.size();
@@ -33,7 +33,7 @@ int bfs() {
 
 int main()
 {
-    //перевірка наявності вхідного файла
+    //РїРµСЂРµРІС–СЂРєР° РЅР°СЏРІРЅРѕСЃС‚С– РІС…С–РґРЅРѕРіРѕ С„Р°Р№Р»Р°
     ifstream fin ("input.osm");
     if (!fin.is_open()) {
         cout << "File \"input.osm\" is not finded.\n";
@@ -41,19 +41,19 @@ int main()
         return 0;
     }
 
-    string line, lastNode, startNode, finishNode; //line - стрічка файлу яка перетворюється на id точки, lastNode - попередня точка, startNode - стартова точка, finishNode - фінішна точка
-    int start = -1, tmp = 0, i, j, lastNodeIndex, nowNodeIndex, result, allNodes = 0; //start - індекс стартової точки, tmp - для обмеження частоти сповіщень, i - індекс для циклу, j - додатковий індекс для циклу, lastNodeIndex - індекс попередньої точки, nowNodeIndex - індекс теперішньої точки, result - кількість точок отриманого маршрута, allNodes - кільсість усіх точок, включно із збігами
-    vector<string> nodesIndexes; //nodesIndexes - індекс точок
-    bool f; //f - прапорець
-    vector<bool> g0; //g0 - масив для отримання матриць
+    string line, lastNode, startNode, finishNode; //line - СЃС‚СЂС–С‡РєР° С„Р°Р№Р»Сѓ СЏРєР° РїРµСЂРµС‚РІРѕСЂСЋС”С‚СЊСЃСЏ РЅР° id С‚РѕС‡РєРё, lastNode - РїРѕРїРµСЂРµРґРЅСЏ С‚РѕС‡РєР°, startNode - СЃС‚Р°СЂС‚РѕРІР° С‚РѕС‡РєР°, finishNode - С„С–РЅС–С€РЅР° С‚РѕС‡РєР°
+    int start = -1, tmp = 0, i, j, lastNodeIndex, nowNodeIndex, result, allNodes = 0; //start - С–РЅРґРµРєСЃ СЃС‚Р°СЂС‚РѕРІРѕС— С‚РѕС‡РєРё, tmp - РґР»СЏ РѕР±РјРµР¶РµРЅРЅСЏ С‡Р°СЃС‚РѕС‚Рё СЃРїРѕРІС–С‰РµРЅСЊ, i - С–РЅРґРµРєСЃ РґР»СЏ С†РёРєР»Сѓ, j - РґРѕРґР°С‚РєРѕРІРёР№ С–РЅРґРµРєСЃ РґР»СЏ С†РёРєР»Сѓ, lastNodeIndex - С–РЅРґРµРєСЃ РїРѕРїРµСЂРµРґРЅСЊРѕС— С‚РѕС‡РєРё, nowNodeIndex - С–РЅРґРµРєСЃ С‚РµРїРµСЂС–С€РЅСЊРѕС— С‚РѕС‡РєРё, result - РєС–Р»СЊРєС–СЃС‚СЊ С‚РѕС‡РѕРє РѕС‚СЂРёРјР°РЅРѕРіРѕ РјР°СЂС€СЂСѓС‚Р°, allNodes - РєС–Р»СЊСЃС–СЃС‚СЊ СѓСЃС–С… С‚РѕС‡РѕРє, РІРєР»СЋС‡РЅРѕ С–Р· Р·Р±С–РіР°РјРё
+    vector<string> nodesIndexes; //nodesIndexes - С–РЅРґРµРєСЃ С‚РѕС‡РѕРє
+    bool f; //f - РїСЂР°РїРѕСЂРµС†СЊ
+    vector<bool> g0; //g0 - РјР°СЃРёРІ РґР»СЏ РѕС‚СЂРёРјР°РЅРЅСЏ РјР°С‚СЂРёС†СЊ
 
-    //отримання кінцевих точок
+    //РѕС‚СЂРёРјР°РЅРЅСЏ РєС–РЅС†РµРІРёС… С‚РѕС‡РѕРє
     cout << "Start node: ";
     cin >> startNode;
     cout <<  "Finish node: ";
     cin >> finishNode;
 
-    //індексація точок
+    //С–РЅРґРµРєСЃР°С†С–СЏ С‚РѕС‡РѕРє
     cout << "Indexing nodes.\n";
     while(!fin.eof()) {
         f = 1;
@@ -80,7 +80,7 @@ int main()
     fin.close();
     cout << "Indexing nodes finished: found " << allNodes << " nodes, " << nodesIndexes.size() << " nodes in index.\n";
 
-    //перевірка на наявність кінцевих точок у вхідному файлі
+    //РїРµСЂРµРІС–СЂРєР° РЅР° РЅР°СЏРІРЅС–СЃС‚СЊ РєС–РЅС†РµРІРёС… С‚РѕС‡РѕРє Сѓ РІС…С–РґРЅРѕРјСѓ С„Р°Р№Р»С–
     if (start < 0 || finish < 0) {
         if (start < 0 && finish < 0) cout << "Start and finish nodes are not found at \"input.osm\".";
         else {
@@ -95,7 +95,7 @@ int main()
     q.push(route);
     tmp = 0;
 
-    //виділення пам'яті для матриці суміжності та матриці використаних ребер
+    //РІРёРґС–Р»РµРЅРЅСЏ РїР°Рј'СЏС‚С– РґР»СЏ РјР°С‚СЂРёС†С– СЃСѓРјС–Р¶РЅРѕСЃС‚С– С‚Р° РјР°С‚СЂРёС†С– РІРёРєРѕСЂРёСЃС‚Р°РЅРёС… СЂРµР±РµСЂ
     cout << "Getting memory for graph.\n";
     for (i = 0; i < n; i++) {
         if (i % 10000 == 0 && i != tmp) {
@@ -113,7 +113,7 @@ int main()
     tmp = 0;
     f = 0;
 
-    //заповнення матриці суміжності
+    //Р·Р°РїРѕРІРЅРµРЅРЅСЏ РјР°С‚СЂРёС†С– СЃСѓРјС–Р¶РЅРѕСЃС‚С–
     cout << "Extracting graph.\n";
     fin.open("input.osm");
     while(!fin.eof()) {
@@ -149,19 +149,19 @@ int main()
     cout << "Extracting graph finished: " << j << '/' << allNodes << " nodes processed.\n";
     fin.close();
 
-    //виконуємо bfs та знаходимо кількість точок маршрута
+    //РІРёРєРѕРЅСѓС”РјРѕ bfs С‚Р° Р·РЅР°С…РѕРґРёРјРѕ РєС–Р»СЊРєС–СЃС‚СЊ С‚РѕС‡РѕРє РјР°СЂС€СЂСѓС‚Р°
     cout << "BFS.\n";
     result = bfs();
     cout << "BFS finished.\n";
 
-    //якщо маршруту немає
+    //СЏРєС‰Рѕ РјР°СЂС€СЂСѓС‚Сѓ РЅРµРјР°С”
     if (result < 0) {
         cout << "Route doesn't exist.\n";
         system("pause");
         return 0;
     }
 
-    //експорт маршруту
+    //РµРєСЃРїРѕСЂС‚ РјР°СЂС€СЂСѓС‚Сѓ
     cout << "Exporting route.\n";
     ofstream fout ("out.txt");
     for (i = 0; i < route.size(); i++) fout << nodesIndexes[route[i]] << ' ';

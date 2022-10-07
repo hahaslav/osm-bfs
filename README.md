@@ -1,27 +1,28 @@
-# Прокладач маршруту заснований на алгоритмі bfs для OSM
-### ***Увага! Цю програму не варто сприймати серйозно.***
-## Компіляція
-Код програми знаходиться у файлі *[main.cpp](https://github.com/hahaslav/osm-bfs/blob/master/main.cpp)*. Сама програма скомпільована на GNU GCC 5.1.0 із такими опціями: `-std=c++11 -Wall -O2`.
-## Принцип роботи
-Програма за допомагою [алгоритму bfs](https://uk.wikipedia.org/wiki/%D0%9F%D0%BE%D1%88%D1%83%D0%BA_%D1%83_%D1%88%D0%B8%D1%80%D0%B8%D0%BD%D1%83) шукає шлях між двома точками. При цьому алгоритм вибирає шлях з найменшою кількістю проміжних точок.
-![принцип](https://i.imgur.com/Cng2XGt.png)
-## Використання
-1. Завантажте файл формату *.osm*, який містить територію, по якій буде прокладено шлях, перейменуйте його у *input.osm*, та помістіть в одну папку із програмою.
-2. Запустіть програму.
-3. Вкажіть id початкової та кінцевої точок шляху.
-4. Якщо програма написала "*Program successfully executed!*", тоді все добре.
-## Прочитання отриманих даних
-### Спосіб **I**:
-Відкрийте файл *map.html*. Він містить карту із нанесеним на неї маршрутом.
-### Спосіб **II**:
-1. Почніть запускати [JOSM](https://josm.openstreetmap.de).
-2. Відкрийте отриманий файл *JOSM.txt*.
-3. Скопіюйте вміст файлу.
-4. У JOSM виберіть *Файл>Завантажити об'єкт...* (*Ctrl+Shift+O*):
-    * У спадному списку *Тип об'єкту* оберіть *точка*.
-    * Переконайтеся, що у полі *Ідентифікатор об'єкту* знаходиться раніше скопійований текст.
-    * Зніміть прапорець *Завантаження пов'язаних членів (батьківські зв'язки)*.
-    * Поставте прапорець *Завантажити як новий шар*.
-5. Готово!
-## Додатково
-Нині програма була протестована лише на Windows 10. Перевірена сумісність при експорті даних із [OpenStreetMap](https://www.openstreetmap.org) та [overpass turbo](https://overpass-turbo.eu/). При великій кількості точок може статись помилка.
+# A router, based on the BFS algorithm, for OpenStreetMap data
+###### English|[Українська](https://github.com/hahaslav/osm-bfs/blob/master/README_UK.md)
+### ***Caution! This app is not meant to be used as a serious road router.***
+## Building
+The source code can be found in *[main.cpp](https://github.com/hahaslav/osm-bfs/blob/master/main.cpp)*. The [released app](https://github.com/hahaslav/osm-bfs/releases/latest) was built with GNU GCC 5.1.0 with parameters `-std=c++11 -Wall -O2`.
+## Implementation
+The app uses the [Breadth-first search algorithm](https://en.wikipedia.org/wiki/Breadth-first_search) to find the path between two nodes. This path will have the least amount of nodes.
+![The algorithm will choose the long way with three nodes but not the shortest one with 20 nodes](https://i.imgur.com/bGbNNhh.png)
+## Usage
+1. Download any *.osm* file with an area where you want to find a way. Rename this file to *input.osm* and put it in the same folder where the app executable is located.
+2. Run the app.
+3. Enter the id of the start and the finish nodes of the way.
+4. Has the app output "*Program successfully executed!*"? If yes, congratulations!
+## Reading the output data
+### Method **I**:
+Open a generated *map.html* in any web browser. It has a map with the way marked on it.
+### Method **II**:
+1. Start opening [JOSM](https://josm.openstreetmap.de).
+2. At the same time, open a generated *JOSM.txt*.
+3. Copy its content into the clipboard.
+4. In JOSM, open *File>Download object...* (*Ctrl+Shift+O*):
+    * In the list *Object type* choose *node*.
+    * Check that the field *Object ID* has the copied text.
+    * Unflag *Download referrers (parent relations)*.
+    * Flag *Separate Layer*.
+5. Done!
+## Also
+The app was tested in 2020 only on Windows 10. It was compatible with exported data from [OpenStreetMap](https://www.openstreetmap.org) and [overpass turbo](https://overpass-turbo.eu/). If the data has too many nodes, the memory for the algorithm may be overflowed (I guess so).

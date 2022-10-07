@@ -6,20 +6,20 @@
 
 using namespace std;
 
-vector<vector<bool> > graph, used; //graph - матриця суміжності графа, used - використані ребра графа
-queue<vector<int> > q; //q - черга для bfs
-vector<int> route; //route - маршрут
-int finish = -1, n; //finish - індекс фінішної точки, n - кількість індексованих точок
+vector<vector<bool> > graph, used; // graph - adjacency matrix of the graph, used - used edges of the graph
+queue<vector<int> > q; // q - queue for bfs
+vector<int> route; // route - way
+int finish = -1, n; // finish - index of the finish node, n - number of indexed
 
 int bfs() {
-    //перевірка на зв'язність графа
+    // checks the graph connectivity
     if (q.empty()) return -1;
 
     route = q.front();
     q.pop();
-    int i, last = route.back(); //i - індекс для циклу, last - остання точка маршруту
+    int i, last = route.back(); // i - index for the loop, last - the last node of the way
 
-    //пошук ще не використаних суміжних точок
+    // search for not yet used adjacent nodes
     for (i = 0; i < n; i++) if (graph[last][i] && !used[last][i]) {
             route.push_back(i);
             if (i == finish) return route.size();
@@ -33,7 +33,7 @@ int bfs() {
 
 int main()
 {
-    //перевірка наявності вхідного файла
+    // check for existance of the input file
     ifstream fin ("input.osm");
     if (!fin.is_open()) {
         cout << "File \"input.osm\" is not finded.\n";
@@ -41,19 +41,19 @@ int main()
         return 0;
     }
 
-    string line, lastNode, startNode, finishNode, toFind; //line - стрічка файлу яка перетворюється на id точки або на її координати, lastNode - попередня точка, startNode - стартова точка, finishNode - фінішна точка, toFind - стрічка із id точки для пошуку її координат
-    int start = -1, tmp = 0, i, j, lastNodeIndex, nowNodeIndex, result, allNodes = 0; //start - індекс стартової точки, tmp - для обмеження частоти сповіщень, i - індекс для циклу, j - додатковий індекс для циклу, lastNodeIndex - індекс попередньої точки, nowNodeIndex - індекс теперішньої точки, result - кількість точок отриманого маршрута, allNodes - кількість усіх точок, включно із збігами, під час експорту - кількість точок у маршруті
-    vector<string> nodesIndexes; //nodesIndexes - індекс точок
-    bool f; //f - прапорець
-    vector<bool> g0; //g0 - масив для отримання матриць
+    string line, lastNode, startNode, finishNode, toFind; // line - line of the file from which the node's id and coordinates are extracted, lastNode - last node, startNode - start node (obviously), finishNode - finish node (OBVIOUSLY), toFind - node id as string type for searching for its coordinates
+    int start = -1, tmp = 0, i, j, lastNodeIndex, nowNodeIndex, result, allNodes = 0; // start - index of the start node, tmp - for limiting the frequency of progress notifications, i - index for loops, j - secondary index for loops, lastNodeIndex - index of the last node, nowNodeIndex - index of the current node, result - number of the nodes of the way, allNodes - number of all nodes in the input (including repeated nodes), number of the nodes in the way, while exporting
+    vector<string> nodesIndexes; // nodesIndexes - index of the nodes
+    bool f; // f - flag
+    vector<bool> g0; // g0 - array for creating matrixes
 
-    //отримання кінцевих точок
+    // getting the way start and finish
     cout << "Start node: ";
     cin >> startNode;
     cout <<  "Finish node: ";
     cin >> finishNode;
 
-    //індексація точок
+    // node indexing
     cout << "Indexing nodes.\n";
     while(!fin.eof()) {
         f = 1;
@@ -61,6 +61,7 @@ int main()
             tmp = allNodes;
             cout << "Indexing nodes: found " << allNodes << " nodes, " << nodesIndexes.size() << " nodes in index.\n";
         }
+		// I didn'n know about the regex yet((
         getline(fin, line);
         if (line.find("<nd ref=") < 10000) {
             allNodes++;
@@ -80,7 +81,7 @@ int main()
     fin.close();
     cout << "Indexing nodes finished: found " << allNodes << " nodes, " << nodesIndexes.size() << " nodes in index.\n";
 
-    //перевірка на наявність кінцевих точок у вхідному файлі
+    // checking for existance of the start and finish nodes in the input file
     if (start < 0 || finish < 0) {
         if (start < 0 && finish < 0) cout << "Start and finish nodes are not found at \"input.osm\".";
         else {
@@ -95,7 +96,7 @@ int main()
     q.push(route);
     tmp = 0;
 
-    //виділення пам'яті для матриці суміжності та матриці використаних ребер
+    // getting memory for the adjacency matrix and the matrix of used edges
     cout << "Getting memory for graph.\n";
     for (i = 0; i < n; i++) {
         if (i % 10000 == 0 && i != tmp) {
@@ -113,7 +114,7 @@ int main()
     tmp = 0;
     f = 0;
 
-    //заповнення матриці суміжності
+    // writing into the adjacency matrix
     cout << "Extracting graph.\n";
     fin.open("input.osm");
     while(!fin.eof()) {
@@ -149,12 +150,12 @@ int main()
     cout << "Extracting graph finished: " << j << '/' << allNodes << " nodes processed.\n";
     fin.close();
 
-    //виконуємо bfs та знаходимо кількість точок маршрута
+    // executing bfs and finding the number of the nodes in the way
     cout << "BFS.\n";
     result = bfs();
     cout << "BFS finished.\n";
 
-    //якщо маршруту немає
+    // if the route does not exist
     if (result < 0) {
         cout << "Route doesn't exist.\n";
         system("pause");
@@ -163,7 +164,7 @@ int main()
 
     allNodes = route.size();
 
-    //експорт маршруту для JOSM
+    // exporting the way nodes into JOSM.txt
     cout << "Exporting route for JOSM.\n";
     ofstream fout ("JOSM.txt");
     for (i = 0; i < allNodes; i++) fout << nodesIndexes[route[i]] << ' ';
@@ -173,7 +174,7 @@ int main()
     tmp = 0;
     j = 0;
 
-    //експорт маршруту для показу на карті
+    // generating a map with the way
     cout << "Exporting route to show it on map.\n";
     fout.open("map.html");
     fout << "<!--This file was generated by BFS for OSM:-->\n";
